@@ -4,7 +4,7 @@ import (
 )
 
 type GenPath struct {
-	conf *GenPathConf
+	Conf *GenPathConf
 
 	generation int
 	population *Population
@@ -20,7 +20,7 @@ func NewGenPath(conf *GenPathConf) (*GenPath, error) {
 		return nil, err
 	}
 
-	self.conf = conf
+	self.Conf = conf
 	self.generation = 0
 	self.population = NewPopulation(conf)
 
@@ -28,29 +28,29 @@ func NewGenPath(conf *GenPathConf) (*GenPath, error) {
 	return self, nil
 }
 
-func (self *GenPath) Step() error {
+func (self *GenPath) Step() (Genomes, error) {
 	self.population.evaluate()
 	self.generation++
-	return nil
+	return self.population.P, nil
 }
 
 
 
 
 func (self *GenPath) calcFitness(g *Genome) FitnessT {
-	if (len(g.genes) > 0) {
-		if (len(g.genes) == 1 && self.conf.StartNode != self.conf.EndNode) {
+	if (len(g.Genes) > 0) {
+		if (len(g.Genes) == 1 && self.Conf.StartNode != self.Conf.EndNode) {
 			return FitnessT(0)
 		}
-		if g.genes[0] != self.conf.StartNode {
+		if g.Genes[0] != self.Conf.StartNode {
 			return FitnessT(0)
 		}
 
 		dist := 0.0
 		reachedEnd := false
-		for i := 0; i < len(g.genes) - 1; i++ {
-			dist += self.conf.dist(g.genes[i], g.genes[i + 1])
-			if g.genes[i + 1] == self.conf.EndNode {
+		for i := 0; i < len(g.Genes) - 1; i++ {
+			dist += self.Conf.dist(g.Genes[i], g.Genes[i + 1])
+			if g.Genes[i + 1] == self.Conf.EndNode {
 				reachedEnd = true
 				break
 			}

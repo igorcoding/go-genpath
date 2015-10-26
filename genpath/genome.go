@@ -1,28 +1,29 @@
 package genpath
+import "strconv"
 
 type FitnessT float64
 type GenesT []int
 
 type Genome struct {
 	conf *GenPathConf
-	fitness FitnessT
-	genes GenesT
+	Fitness FitnessT
+	Genes GenesT
 }
 
 func NewGenome(conf *GenPathConf) *Genome {
 	self := newGenome(conf)
 
 	hasGenes := make(map[int]bool)
-	for i := range(self.genes) {
+	for i := range(self.Genes) {
 		if (i == 0) {
-			self.genes[i] = self.conf.StartNode
+			self.Genes[i] = self.conf.StartNode
 		} else {
-			self.genes[i] = -1
-			for self.genes[i] == -1 || hasGenes[self.genes[i]] {
-				self.genes[i] = randInt(0, len(conf.Graph))
+			self.Genes[i] = -1
+			for self.Genes[i] == -1 || hasGenes[self.Genes[i]] {
+				self.Genes[i] = randInt(0, len(conf.Graph))
 			}
 		}
-		hasGenes[self.genes[i]] = true
+		hasGenes[self.Genes[i]] = true
 	}
 	return self
 }
@@ -30,18 +31,18 @@ func NewGenome(conf *GenPathConf) *Genome {
 func newGenome(conf *GenPathConf) *Genome {
 	self := &Genome{
 		conf: conf,
-		fitness: 0,
+		Fitness: 0,
 	}
-	self.genes = make(GenesT, len(conf.Graph))
+	self.Genes = make(GenesT, len(conf.Graph))
 	return self
 }
 
 func (self *Genome) Mutate() *Genome {
 	toChange := self.conf.StartNode
 	for toChange == self.conf.StartNode {
-		toChange = randInt(0, len(self.genes))
+		toChange = randInt(0, len(self.Genes))
 	}
-	self.genes[toChange] = randInt(0, len(self.conf.Graph))
+	self.Genes[toChange] = randInt(0, len(self.conf.Graph))
 	return self
 }
 
@@ -49,20 +50,32 @@ func (self *Genome) Crossover(another *Genome) *Genome {
 	g := newGenome(self.conf)
 	genomes := []*Genome { self, another }
 	activeGenome := randInt(0, 2);
-	splitPoint := int(len(self.genes) / 2)
-	for i := 0; i < len(g.genes); i++ {
-		if i == splitPoint {
+	splitPoints := make(map[int]bool)
+	for i := 0; i < self.conf.CrossoverSegmentSplitsCount - 1; i++ {
+		s := int(len(self.Genes) / self.conf.CrossoverSegmentSplitsCount) * (i + 1)
+		splitPoints[s] = true
+	}
+	for i := 0; i < len(g.Genes); i++ {
+		if splitPoints[i] {
 			activeGenome = (activeGenome + 1) % len(genomes)
 		}
-		g.genes[i] = genomes[activeGenome].genes[i]
+		g.Genes[i] = genomes[activeGenome].Genes[i]
 	}
 
 	return g
 }
 
 func (self *Genome) EvalFitness() FitnessT {
-	self.fitness = self.conf.fitnessFunc(self)
-	return self.fitness
+	self.Fitness = self.conf.fitnessFunc(self)
+	return self.Fitness
+}
+
+func (self *Genome) ToString() string {
+	var s string
+	for i := range(self.Genes) {
+		s += strconv.Itoa(self.Genes[i])
+	}
+	return s
 }
 
 
@@ -74,7 +87,7 @@ type Genomes []*Genome
 func (g Genomes) Len() int           { return len(g) }
 func (g Genomes) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
 func (g Genomes) Less(i, j int) bool {
-	return g[i].fitness > g[j].fitness
+	return g[i].Fitness > g[j].Fitness
 }
 
 func NewGenomes(conf *GenPathConf, count int) Genomes {

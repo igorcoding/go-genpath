@@ -20,12 +20,14 @@ type GenPathConf struct {
 	Graph GraphT
 	StartNode int
 	EndNode int
-	PopulationSize int
 
+	PopulationSize int
 	CrossoversCount int
 	CrossoverProb float64
 	CrossoverSegmentSplitsCount int
 	SelectionCount int
+	RemoveDuplicates bool
+
 	MutationProb float64
 
 	fitnessFunc FitnessFunc
