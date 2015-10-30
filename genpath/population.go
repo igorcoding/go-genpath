@@ -45,6 +45,9 @@ func (self *Population) evaluate() {
 	if (self.conf.RemoveDuplicates) {
 		self.removeDuplicates()
 	}
+	for i := range(self.P) {
+		self.P[i].EvalFitness()
+	}
 	if len(self.P) > self.conf.PopulationSize {
 		self.P = self.P[:self.conf.PopulationSize]
 	}

@@ -1,5 +1,7 @@
 package genpath
-import "strconv"
+import (
+	"strconv"
+)
 
 type FitnessT float64
 type GenesT []int

@@ -1,6 +1,7 @@
 package genpath
 import (
 	"math"
+//	"github.com/kr/pretty"
 )
 
 type GenPath struct {
