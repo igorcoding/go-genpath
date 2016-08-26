@@ -1,23 +1,25 @@
 package genpath
+
 import (
-	"sort"
+	"math"
 	"math/rand"
+	"sort"
+
 	"github.com/kr/pretty"
-"math"
 )
 
 type Population struct {
 	conf *GenPathConf
-	P Genomes
+	P    Genomes
 }
 
 func NewPopulation(conf *GenPathConf) *Population {
 	self := &Population{
 		conf: conf,
-		P: NewGenomes(conf, conf.PopulationSize),
+		P:    NewGenomes(conf, conf.PopulationSize),
 	}
 
-	for i := range(self.P) {
+	for i := range self.P {
 		self.P[i].EvalFitness()
 	}
 	self.sort()
@@ -42,16 +44,16 @@ func (self *Population) evaluate() {
 	}
 
 	self.sort()
-	if (self.conf.RemoveDuplicates) {
+	if self.conf.RemoveDuplicates {
 		self.removeDuplicates()
 	}
-	for i := range(self.P) {
+	for i := range self.P {
 		self.P[i].EvalFitness()
 	}
 	if len(self.P) > self.conf.PopulationSize {
 		self.P = self.P[:self.conf.PopulationSize]
 	}
-//	pretty.Println(self.P)
+	//	pretty.Println(self.P)
 }
 
 func (self *Population) sort() {
@@ -63,12 +65,12 @@ func (self *Population) removeDuplicates() {
 	uniqueGenomes := make(map[string]bool)
 
 	j := 0
-	for i := range(self.P) {
+	for i := range self.P {
 		if j < self.conf.PopulationSize {
 			s := self.P[i].ToString()
 			pretty.Println(i, s)
 			if !uniqueGenomes[s] {
-//				pretty.Println("\tchanging")
+				//				pretty.Println("\tchanging")
 				p[j] = self.P[i]
 				j++
 				uniqueGenomes[s] = true

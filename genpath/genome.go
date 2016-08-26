@@ -1,4 +1,5 @@
 package genpath
+
 import (
 	"strconv"
 )
@@ -7,17 +8,17 @@ type FitnessT float64
 type GenesT []int
 
 type Genome struct {
-	conf *GenPathConf
+	conf    *GenPathConf
 	Fitness FitnessT
-	Genes GenesT
+	Genes   GenesT
 }
 
 func NewGenome(conf *GenPathConf) *Genome {
 	self := newGenome(conf)
 
 	hasGenes := make(map[int]bool)
-	for i := range(self.Genes) {
-		if (i == 0) {
+	for i := range self.Genes {
+		if i == 0 {
 			self.Genes[i] = self.conf.StartNode
 		} else {
 			self.Genes[i] = -1
@@ -32,7 +33,7 @@ func NewGenome(conf *GenPathConf) *Genome {
 
 func newGenome(conf *GenPathConf) *Genome {
 	self := &Genome{
-		conf: conf,
+		conf:    conf,
 		Fitness: 0,
 	}
 	self.Genes = make(GenesT, len(conf.Graph))
@@ -50,11 +51,11 @@ func (self *Genome) Mutate() *Genome {
 
 func (self *Genome) Crossover(another *Genome) *Genome {
 	g := newGenome(self.conf)
-	genomes := []*Genome { self, another }
-	activeGenome := randInt(0, 2);
+	genomes := []*Genome{self, another}
+	activeGenome := randInt(0, 2)
 	splitPoints := make(map[int]bool)
-	for i := 0; i < self.conf.CrossoverSegmentSplitsCount - 1; i++ {
-		s := int(len(self.Genes) / self.conf.CrossoverSegmentSplitsCount) * (i + 1)
+	for i := 0; i < self.conf.CrossoverSegmentSplitsCount-1; i++ {
+		s := int(len(self.Genes)/self.conf.CrossoverSegmentSplitsCount) * (i + 1)
 		splitPoints[s] = true
 	}
 	for i := 0; i < len(g.Genes); i++ {
@@ -74,27 +75,23 @@ func (self *Genome) EvalFitness() FitnessT {
 
 func (self *Genome) ToString() string {
 	var s string
-	for i := range(self.Genes) {
+	for i := range self.Genes {
 		s += strconv.Itoa(self.Genes[i])
 	}
 	return s
 }
 
-
-
-
-
 type Genomes []*Genome
 
-func (g Genomes) Len() int           { return len(g) }
-func (g Genomes) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
+func (g Genomes) Len() int      { return len(g) }
+func (g Genomes) Swap(i, j int) { g[i], g[j] = g[j], g[i] }
 func (g Genomes) Less(i, j int) bool {
 	return g[i].Fitness > g[j].Fitness
 }
 
 func NewGenomes(conf *GenPathConf, count int) Genomes {
 	self := make(Genomes, count)
-	for i := range(self) {
+	for i := range self {
 		self[i] = NewGenome(conf)
 	}
 	return self

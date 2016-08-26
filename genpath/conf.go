@@ -1,15 +1,16 @@
 package genpath
+
 import (
 	"errors"
 	"fmt"
 )
 
 const (
-	DEFAULT_POPULATION_SIZE = 10
-	DEFAULT_CROSSOVERS_COUNT = 1
-	DEFAULT_CROSSOVER_PROB = 1.0
-	DEFAULT_MUTATION_PROB = 0.1
-	DEFAULT_SELECTION_COUNT = 2
+	DEFAULT_POPULATION_SIZE                = 10
+	DEFAULT_CROSSOVERS_COUNT               = 1
+	DEFAULT_CROSSOVER_PROB                 = 1.0
+	DEFAULT_MUTATION_PROB                  = 0.1
+	DEFAULT_SELECTION_COUNT                = 2
 	DEFAULT_CROSSOVER_SEGMENT_SPLITS_COUNT = 1
 )
 
@@ -17,16 +18,16 @@ type FitnessFunc func(*Genome) FitnessT
 type GraphT [][]float64
 
 type GenPathConf struct {
-	Graph GraphT
+	Graph     GraphT
 	StartNode int
-	EndNode int
+	EndNode   int
 
-	PopulationSize int
-	CrossoversCount int
-	CrossoverProb float64
+	PopulationSize              int
+	CrossoversCount             int
+	CrossoverProb               float64
 	CrossoverSegmentSplitsCount int
-	SelectionCount int
-	RemoveDuplicates bool
+	SelectionCount              int
+	RemoveDuplicates            bool
 
 	MutationProb float64
 
@@ -46,11 +47,11 @@ func (self *GenPathConf) check() error {
 		self.PopulationSize = DEFAULT_POPULATION_SIZE
 	}
 
-	if (self.StartNode < 0 || self.StartNode >= len(self.Graph)) {
+	if self.StartNode < 0 || self.StartNode >= len(self.Graph) {
 		return errors.New(fmt.Sprintf("Start node has to be >= 0 and < %d. Got: %d", len(self.Graph), self.StartNode))
 	}
 
-	if (self.EndNode < 0) {
+	if self.EndNode < 0 {
 		return errors.New(fmt.Sprintf("End node has to be >= 0 and < %d. Got: %d", len(self.Graph), self.EndNode))
 	}
 
@@ -73,7 +74,6 @@ func (self *GenPathConf) check() error {
 	if self.MutationProb < 0.0 {
 		self.MutationProb = DEFAULT_MUTATION_PROB
 	}
-
 
 	if self.SelectionCount > self.PopulationSize {
 		self.SelectionCount = self.PopulationSize

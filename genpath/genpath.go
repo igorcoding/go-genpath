@@ -1,7 +1,7 @@
 package genpath
+
 import (
 	"math"
-//	"github.com/kr/pretty"
 )
 
 type GenPath struct {
@@ -35,12 +35,9 @@ func (self *GenPath) Step() (Genomes, error) {
 	return self.population.P, nil
 }
 
-
-
-
 func (self *GenPath) calcFitness(g *Genome) FitnessT {
-	if (len(g.Genes) > 0) {
-		if (len(g.Genes) == 1 && self.Conf.StartNode != self.Conf.EndNode) {
+	if len(g.Genes) > 0 {
+		if len(g.Genes) == 1 && self.Conf.StartNode != self.Conf.EndNode {
 			return FitnessT(0)
 		}
 		if g.Genes[0] != self.Conf.StartNode {
@@ -49,9 +46,9 @@ func (self *GenPath) calcFitness(g *Genome) FitnessT {
 
 		dist := 0.0
 		reachedEnd := false
-		for i := 0; i < len(g.Genes) - 1; i++ {
-			dist += self.Conf.dist(g.Genes[i], g.Genes[i + 1])
-			if g.Genes[i + 1] == self.Conf.EndNode {
+		for i := 0; i < len(g.Genes)-1; i++ {
+			dist += self.Conf.dist(g.Genes[i], g.Genes[i+1])
+			if g.Genes[i+1] == self.Conf.EndNode {
 				reachedEnd = true
 				break
 			}
